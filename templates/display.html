@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Plant Species Result</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap & Font Awesome -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    crossorigin="anonymous">
+  <link href="{{ url_for('static', filename='styles/style.css') }}" rel="stylesheet" type="text/css">
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+  <!-- Print Styling -->
+  <style>
+    @media print {
+      #map,
+      .btn,
+      .move-top {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Header -->
+  <div class="header-outs inner_page-banner" id="home">
+    <div class="headder-top">
+      <nav>
+        <div id="logo">
+          <h1><a href="/">LeafScan</a></h1>
+        </div>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Breadcrumb -->
+  <div class="using-border py-3">
+    <div class="inner_breadcrumb ml-4">
+      <ul class="short_ls">
+        <li><a href="/">Home</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <section class="about py-4" id="about">
+    <div class="container py-4">
+      <div class="row justify-content-center">
+        <div class="col-md-10 about-two-grids">
+          <h3 class="mb-4 text-center">Identified Plant Species</h3>
+
+          <div class="about-para-txt text-justify">
+            <!-- Plant Description -->
+            <div class="card p-4 shadow-sm border border-secondary rounded bg-light">
+              <div class="card-body">
+                {{ result|safe }}
+              </div>
+            </div>
+
+            <!-- Plant Census Information -->
+            <div class="card mt-4 shadow-sm border border-info rounded bg-white">
+              <div class="card-body">
+                <h5 class="card-title">Plant Census Information</h5>
+                <p><strong>Estimated Count:</strong> {{ census.estimated_count | default('N/A') }}</p>
+                <p><strong>Conservation Status:</strong> {{ census.status | default('Unknown') }}</p>
+                <p><strong>Last Survey Year:</strong> {{ census.year | default('—') }}</p>
+              </div>
+            </div>
+
+            <!-- Botanical Details -->
+            <div class="card mt-4 shadow-sm border border-success rounded bg-white">
+              <div class="card-body">
+                <h5 class="card-title">Botanical Information</h5>
+                <p><strong>Scientific Name:</strong> {{ scientific_name | default('N/A') }}</p>
+                <p><strong>Uses:</strong> {{ uses | default('—') }}</p>
+                <p><strong>Flowering Season:</strong> {{ flowering_season | default('—') }}</p>
+                <p><strong>Biodiversity Zone:</strong> {{ biodiversity_zone | default('—') }}</p>
+              </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="text-center mt-4">
+              <a href="/" class="btn btn-success">Try Another</a>
+              <button onclick="window.print()" class="btn btn-outline-primary ml-2">Print Report</button>
+            </div>
+          </div>
+
+          <!-- Map Section -->
+          <div class="container mt-5">
+            <h4 class="text-center mb-3">Native Locations of {{ plant_name }}</h4>
+            <div id="map" style="height: 400px; width: 100%; border-radius: 10px; overflow: hidden;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container pt-5 pb-3">
+      <div class="footer-w3layouts-head text-center">
+        <h2><a href="/">LeafScan</a></h2>
+      </div>
+      <div class="bottem-wthree-footer text-center pt-md-4 pt-3">
+        <p>All Rights Reserved | Designed by SAAP</p>
+      </div>
+      <div class="text-center">
+        <a href="#home" class="move-top text-center mt-3">
+          <i class="fa fa-arrow-up" aria-hidden="true"></i>
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const locations = {{ locations | tojson }};
+      const defaultLat = locations.length > 0 ? locations[0].lat : 20.5937;
+      const defaultLng = locations.length > 0 ? locations[0].lng : 78.9629;
+
+      const map = L.map('map').setView([defaultLat, defaultLng], 6);
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors',
+        maxZoom: 18
+      }).addTo(map);
+
+      locations.forEach(loc => {
+        L.marker([loc.lat, loc.lng])
+          .addTo(map)
+          .bindPopup(`<b>{{ plant_name }}</b><br>${loc.place}`);
+      });
+    });
+  </script>
+</body>
+</html>
