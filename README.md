@@ -30,23 +30,3 @@ A deep learning-powered web application that identifies plant species based on l
 
 ---
 
-## 📂 Project Structure
-plant-identifier/
-│
-├── app.py # Flask app entry point
-├── model.py # Model loading & prediction logic
-├── utils.py # Species descriptions and helper functions
-├── requirements.txt # Python dependencies
-│
-├── Models/
-│ └── best_leaf_cnn_model.pt # Trained PyTorch model
-│
-├── templates/
-│ ├── index.html # Upload form UI
-│ └── display.html # Prediction results page
-│
-├── static/
-│ ├── styles/
-│ │ └── style.css # Custom CSS styles
-│ └── images/
-│ └── 4.jpg # Background & UI images
