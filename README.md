@@ -29,4 +29,6 @@ A deep learning-powered web application that identifies plant species based on l
 - Vilayati Chinch *(Pithecellobium dulce)*
 
 ---
+![Screenshot 2025-04-20 163459](https://github.com/user-attachments/assets/88630c97-6558-49d0-8008-b62267f5288c)
+
 
